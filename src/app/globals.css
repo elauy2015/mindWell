@@ -1,0 +1,30 @@
+@import url("https://fonts.cdnfonts.com/css/nunito-sans");
+@import url('https://fonts.googleapis.com/css2?family=Questrial&display=swap');
+@tailwind components;
+@tailwind utilities;
+@tailwind base;
+
+html,
+body {
+  padding: 0;
+  margin: 0;
+  scroll-behavior: smooth;
+}
+
+* {
+  box-sizing: border-box;
+  font-family: "Nunito Sans", sans-serif !important;
+}
+
+#root {
+  margin: 0;
+  padding: 0;
+}
+
+.bgGradient {
+  background: linear-gradient(168deg, #17C3CE -0.33%, #17C3CE -0.32%, #02969F 98.65%);
+}
+
+h1,h2,h3,h4{
+  font-family: 'Questrial', sans-serif  !important;
+}
