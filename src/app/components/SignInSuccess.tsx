@@ -4,6 +4,7 @@ import React from 'react'
 import Image from "next/image";
 import Robot from "../assets/robot.png";
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 interface SignInSuccess {
     isOpen: boolean
     onOpenChange: any 
@@ -30,14 +31,14 @@ const SignInSuccess = ({isOpen, onOpenChange}:SignInSuccess) => {
               className="mx-auto w-64 h-64"
               alt="Picture of the author"
             />
-            <h3 className='text-3xl text-lightGrey mt-10'>MinWell</h3>
-            <Button
+            <h3 className='text-3xl text-lightGrey mt-10'>MindWell</h3>
+            <Link href="/chat"><Button
             size="lg"
-            onPress={()=>{router.push('/chat')}}
             className=" !bg-principal w-full text-white text-2xl mt-32 h-14 rounded-2xl font-bold "
           >
             Start Chat
-          </Button>
+          </Button></Link>
+            
           </div>
           </ModalBody>
         </>

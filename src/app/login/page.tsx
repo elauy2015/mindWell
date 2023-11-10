@@ -31,7 +31,7 @@ const page = () => {
   };
 
   return (
-    <div className=" h-screen px-[5%] md:px-[10%] xl:px-[15%] 2xl:px-[20%]">
+    <div className="h-screen layout-padding">
       <Link href="/">
         <Button
           isIconOnly

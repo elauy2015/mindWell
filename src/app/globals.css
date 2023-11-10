@@ -28,3 +28,30 @@ body {
 h1,h2,h3,h4{
   font-family: 'Questrial', sans-serif  !important;
 }
+
+@media (width <= 1024px) {
+  .layout-padding {
+    padding-right: 5%;
+    padding-left: 5%;
+  }
+}
+@media (width > 1024px) {
+  .layout-padding {
+    padding-right: 10%;
+    padding-left: 10%;
+  }
+}
+
+@media (width >= 1280px) {
+  .layout-padding {
+    padding-right: 10%;
+    padding-left: 10%;
+  }
+}
+
+@media (width >= 1536px) {
+  .layout-padding {
+    padding-right: 20%;
+    padding-left: 20%;
+  }
+}

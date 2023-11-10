@@ -13,7 +13,8 @@ const config: Config = {
     extend: {
       colors:{
         principal: "#17c3ce",
-        lightGrey: '#c2c2c2'
+        lightGrey: '#c2c2c2',
+        backGroundGray: '#FAFAFA'
       }
     },
   },
