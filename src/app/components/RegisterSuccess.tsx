@@ -7,7 +7,7 @@ interface RegisterSucccess {
 
 const RegisterSucccess = ({isOpen, onOpenChange}:RegisterSucccess) => {
   return (
-    <Modal placement='center' isOpen={isOpen} onOpenChange={onOpenChange}>
+    <Modal placement='center' isDismissable={false} isOpen={isOpen} hideCloseButton onOpenChange={onOpenChange}>
     <ModalContent>
       {(onClose) => (
         <>

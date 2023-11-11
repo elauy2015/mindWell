@@ -55,3 +55,7 @@ h1,h2,h3,h4{
     padding-left: 20%;
   }
 }
+
+.white-filter{
+  filter: invert(100%) sepia(0%) saturate(2%) hue-rotate(342deg) brightness(112%) contrast(101%);
+}

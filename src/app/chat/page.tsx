@@ -1,18 +1,34 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 "use client";
-import { Button, Input, useDisclosure } from "@nextui-org/react";
-import React from "react";
+import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { useForm } from "react-hook-form";
-import Robot from "../assets/robot.png";
-import Archive from "../assets/archive-add.svg";
-import Element from "../assets/element.svg";
-import Messages from "../assets/messages.svg";
+
 import Microphone from "../assets/microphone.svg";
+import Spin from "../assets/spinner-white.svg";
 import Send from "../assets/send.svg";
+import NoChats from "../components/NoChats";
+import { Button, Input, useDisclosure } from "@nextui-org/react";
+import ChatNavBar from "../components/ChatNavBar";
+import ChatFooter from "../components/ChatFooter";
+import ChatBox from "../components/ChatBox";
+import { useAuth } from "../context/AuthContext";
+import { getUserChats, sendChatRequest } from "../helper/api-communicator";
+import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
+
+type UserRole = "user" | "assistant";
+interface Message {
+  role: UserRole;
+  content: string;
+}
 
 const page = () => {
-  // eslint-disable-next-line react-hooks/rules-of-hooks
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const auth = useAuth();
+  const router = useRouter();
+  const [chatMessages, setChatMessages] = useState<Message[]>([]);
+  const chatContainerRef = useRef<HTMLDivElement>(null);
+  const [loadingChatBot, setLoadingChatBot] = useState(false);
   const inputStyles = {
     input: ["text-base", "placeholder:text-lightGray", "px-3"],
     inputWrapper: ["bg-backGroundGray", "", "h-14", "!rounded-xl", "shadow"],
@@ -21,122 +37,142 @@ const page = () => {
     register,
     handleSubmit,
     watch,
+    setValue,
     formState: { errors },
-    // eslint-disable-next-line react-hooks/rules-of-hooks
   } = useForm({
     values: {
-      email: "",
-      password: "",
+      prompt: "",
     },
     mode: "onChange",
     reValidateMode: "onChange",
   });
-  const onSubmit = (data: any) => {
-    onOpen();
+
+  const onSubmit = async (data: any) => {
+    scrollChatToBottom();
+    setLoadingChatBot(true);
+    const newMessage: Message = { role: "user", content: data.prompt };
+    setChatMessages((prev) => [...prev, newMessage]);
+    setValue("prompt", "");
+
+    const chatData = await sendChatRequest(data.prompt);
+    setChatMessages([...chatData.chats]);
+    setLoadingChatBot(false);
   };
+
+  const scrollChatToBottom = () => {
+    if (chatContainerRef.current) {
+      chatContainerRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
+  useLayoutEffect(() => {
+    if (auth?.isLoggedIn && auth.user) {
+      toast.loading("Loading Chats", { id: "loadchats" });
+
+      getUserChats()
+        .then((data) => {
+          setChatMessages([...data.chats]);
+          if(data.chats.length >= 1){
+            toast.success("Succesfully loaded chats", { id: "loadchats" });
+          }else{
+            toast.dismiss();
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  }, [auth]);
+
+  useEffect(() => {
+    scrollChatToBottom();
+  }, [chatMessages]);
+
+  useEffect(() => {
+      if (!auth?.user) {
+        router.push("/login");
+      }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [auth]);
+
   return (
     <>
-      <section className="flex h-20 border-b-3 justify-center items-center top-0 fixed w-full bg-white">
-        <h1 className="text-2xl font-medium">MindWell</h1>
-      </section>
-      <section className=" h-screen mt-20 layout-padding">
-        <Image
-          src={Robot}
-          width={500}
-          height={500}
-          quality={100}
-          className="mx-auto w-40 h-40"
-          alt="Picture of the author"
-        />
-        <h3 className="text-3xl text-lightGrey mt-4 text-center">MindWell</h3>
-        <div className=" space-y-4 text-lightGrey mt-6 text-center">
-          <div className="bg-backGroundGray p-6 rounded-2xl ">
-            ChatGPT is an artificial-intelligence chatbot developed by Open AI
-          </div>
-          <div className="bg-backGroundGray p-6 rounded-2xl ">
-            ChatGPT launched in November 2022.
-          </div>
-          <div className="bg-backGroundGray p-6 rounded-2xl ">
-            ChatGPT is an artificial-intelligence chatbot developed by OpenAI
-          </div>
-          <div>This is example that what can i do for you.</div>
-        </div>
-      </section>
-      <section className="flex flex-col fixed w-full bottom-0 justify-end">
-        <div className="flex items-center mb-4 layout-padding">
-          <Input
-            {...register("password", {
-              required: "Porfavor llene la vaina",
-              pattern: {
-                message: "Formato inválido",
-                value: /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d).{8,}$/,
-              },
+      <ChatNavBar setChatMessages={setChatMessages} />
+      <section className="h-[calc(100vh-200px)] my-16 layout-padding overflow-y-auto pt-4 ">
+        {chatMessages.length < 1 ? (
+          <NoChats />
+        ) : (
+          <div className="layout-padding flex flex-col gap-3">
+            {chatMessages.map((message, index) => {
+              return (
+                <ChatBox
+                  key={index}
+                  content={message.content}
+                  role={message.role}
+                />
+              );
             })}
-            className=" w-5/6"
-            classNames={inputStyles}
-            endContent={
-              <Image
-                src={Microphone}
-                width={500}
-                height={500}
-                quality={100}
-                className=" w-8 h-8 mr-2"
-                alt="Picture of the author"
-              />
-            }
-            label=" "
-            placeholder="Ask me anything... "
-          />
+            <div
+              className="mt-6"
+              id="chatContainer"
+              ref={chatContainerRef}
+            ></div>
+          </div>
+        )}
+      </section>
+
+      <section className="flex flex-col fixed w-full bottom-0 justify-end bg-white">
+        <form
+          className="flex items-center mb-4 layout-padding"
+          onSubmit={handleSubmit(onSubmit)}
+        >
+          <div className="flex flex-col w-5/6 h-16">
+            <Input
+              {...register("prompt", {
+                required: "Porfavor llene la vaina",
+                pattern: {
+                  message: "Formato inválido",
+                  value: /^[\s\S]*$/g,
+                },
+              })}
+              maxLength={300}
+              className=""
+              classNames={inputStyles}
+              endContent={
+                <Image
+                  src={Microphone}
+                  width={500}
+                  height={500}
+                  quality={100}
+                  className=" w-8 h-8 mr-2"
+                  alt="Picture of the author"
+                />
+              }
+              label=" "
+              isInvalid={!!errors.prompt?.message}
+              errorMessage={errors.prompt?.message}
+              placeholder="Ask me anything... "
+            />
+          </div>
+
           <Button
             isIconOnly
+            type="submit"
             size="lg"
+            isDisabled={!!loadingChatBot}
             className="ml-auto flex !bg-principal rounded-full shadow-md shadow-cyan-500/50"
           >
             <Image
-              src={Send}
+              src={!!loadingChatBot ? Spin : Send}
               width={500}
               height={500}
               quality={100}
-              className=" w-8 h-8"
+              className={`${!!loadingChatBot && "animate-spin"} w-8 h-8`}
               alt="Picture of the author"
             />
           </Button>
-        </div>
-        <div className="flex h-[70px] justify-evenly text-center text-xs text-principal bg-backGroundGray">
-          <div className="flex flex-col justify-center mx-4 cursor-pointer">
-            <Image
-              src={Messages}
-              width={500}
-              height={500}
-              quality={100}
-              className="mx-auto w-8 h-8"
-              alt="Picture of the author"
-            />
-            <p>Chat</p>
-          </div>
-          <div className="flex flex-col justify-center mx-4 cursor-pointer">
-            <Image
-              src={Element}
-              width={500}
-              height={500}
-              quality={100}
-              className="mx-auto w-8 h-8"
-              alt="Picture of the author"
-            />
-            <p className="text-lightGrey">Chat</p>
-          </div>
-          <div className="flex flex-col justify-center mx-4 cursor-pointer">
-            <Image
-              src={Archive}
-              width={500}
-              height={500}
-              quality={100}
-              className="mx-auto w-8 h-8"
-              alt="Picture of the author"
-            />
-            <p className="text-lightGrey">Chat</p>
-          </div>
-        </div>
+        </form>
+        <ChatFooter />
       </section>
     </>
   );

@@ -8,9 +8,12 @@ import Imagen3 from "./assets/slider3.jpeg";
 import arrowBlack from "./assets/arrowBlack.svg";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { useAuth } from "./context/AuthContext";
 
 export default function Home() {
   const [changeView, setChangeView] = useState(0);
+  console.log(useAuth()?.isLoggedIn);
+
   const router = useRouter()
   const sections = [
     {

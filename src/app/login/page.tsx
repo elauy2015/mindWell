@@ -1,6 +1,13 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 "use client";
-import { Button, Checkbox, Input, Link, useDisclosure } from "@nextui-org/react";
-import React from "react";
+import {
+  Button,
+  Checkbox,
+  Input,
+  Link,
+  useDisclosure,
+} from "@nextui-org/react";
+import React, { useEffect } from "react";
 import arrowBlack from "../assets/arrowBlack.svg";
 import Image from "next/image";
 import { SubmitHandler, useForm } from "react-hook-form";
@@ -8,16 +15,19 @@ import Google from "../assets/google.svg";
 import Facebook from "../assets/facebook.svg";
 import Apple from "../assets/apple.svg";
 import SignInSuccess from "../components/SignInSuccess";
+import { useAuth } from "../context/AuthContext";
+import { toast } from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
 const page = () => {
-      // eslint-disable-next-line react-hooks/rules-of-hooks
+  const auth = useAuth();
+  const router = useRouter();
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const {
     register,
     handleSubmit,
     watch,
     formState: { errors },
-    // eslint-disable-next-line react-hooks/rules-of-hooks
   } = useForm({
     values: {
       email: "",
@@ -26,9 +36,23 @@ const page = () => {
     mode: "onChange",
     reValidateMode: "onChange",
   });
-  const onSubmit = (data: any) => {
-    onOpen();
+  const onSubmit = async (data: any) => {
+    toast.loading("Signing In...", { id: "signing" });
+    try {
+      await auth?.login(data.email, data.password);
+      onOpen();
+      toast.success("Signing in successfully ", { id: "signing" });
+    } catch (error) {
+      toast.error("Signing in failed", { id: "signing" });
+    }
   };
+
+  useEffect(() => {
+    if (auth?.user && !isOpen) {
+      router.push("/chat");
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [auth]);
 
   return (
     <div className="h-screen layout-padding">
@@ -105,7 +129,7 @@ const page = () => {
           </a>
           <div className="flex flex-row w-full justify-center gap-2 mt-4">
             <p className="font-semibold">Don`t have an account?</p>
-            <Link href="/register" className="text-principal">
+            <Link href="/signup" className="text-principal">
               Sign up
             </Link>
           </div>
@@ -138,7 +162,10 @@ const page = () => {
           </div>
         </form>
       </div>
-      <SignInSuccess isOpen={isOpen} onOpenChange={onOpenChange}></SignInSuccess>
+      <SignInSuccess
+        isOpen={isOpen}
+        onOpenChange={onOpenChange}
+      ></SignInSuccess>
     </div>
   );
 };

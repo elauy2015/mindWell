@@ -14,7 +14,10 @@ const config: Config = {
       colors:{
         principal: "#17c3ce",
         lightGrey: '#c2c2c2',
-        backGroundGray: '#FAFAFA'
+        backGroundGray: '#FAFAFA',
+        bubbleGray: '#F5F5F5',
+        bubbleBlack: "#212121",
+        customRed: "#E76C6C"
       }
     },
   },

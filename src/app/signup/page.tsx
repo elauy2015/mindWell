@@ -34,6 +34,7 @@ const page = () => {
     reValidateMode: "onChange",
   });
   const onSubmit = (data: any) => {
+    console.log(data);
     onOpen();
   };
 
@@ -68,7 +69,7 @@ const page = () => {
                 required: "Porfavor llene la vaina",
                 pattern: {
                   message: "Formato inválido",
-                  value: /[a-zA-Z0-9ñÑ]+@[a-zA-ZñÑ]+\.[a-zA-ZñÑ]{2,3}/g,
+                  value: /^[a-zA-Z]+(?: [a-zA-Z]+)?$/g,
                 },
               })}
               type="name"

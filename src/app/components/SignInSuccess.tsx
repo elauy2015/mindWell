@@ -14,7 +14,7 @@ interface SignInSuccess {
 const SignInSuccess = ({isOpen, onOpenChange}:SignInSuccess) => {
   const router = useRouter()
   return (
-    <Modal  size='full' isOpen={isOpen} onOpenChange={onOpenChange}>
+    <Modal  size='full' isDismissable={false} hideCloseButton isOpen={isOpen} onOpenChange={onOpenChange}>
     <ModalContent>
       {(onClose) => (
         <>
