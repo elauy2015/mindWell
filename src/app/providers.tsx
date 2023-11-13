@@ -3,9 +3,9 @@
 
 import { NextUIProvider } from "@nextui-org/react";
 import { AuthProvider } from "./context/AuthContext";
-import { Toaster } from "react-hot-toast"
-import axios from "axios"
-axios.defaults.baseURL = "https://mindwellbackend.onrender.com/api/v1/";
+import { Toaster } from "react-hot-toast";
+import axios from "axios";
+axios.defaults.baseURL = "http://localhost:5000/api/v1/";
 axios.defaults.withCredentials = true;
 
 export function Providers({ children }: { children: React.ReactNode }) {
@@ -13,7 +13,8 @@ export function Providers({ children }: { children: React.ReactNode }) {
     <AuthProvider>
       <NextUIProvider>
         <Toaster position="bottom-center" />
-        {children}</NextUIProvider>
+        {children}
+      </NextUIProvider>
     </AuthProvider>
   );
 }
