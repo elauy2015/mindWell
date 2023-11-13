@@ -36,7 +36,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           setUser({
             email: data.email,
             name: data.name,
-            image: data?.image ?? "https://i.pravatar.cc/300",
+            image: data?.image,
           });
           setIsLoggedIn(true);
         }
@@ -50,7 +50,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setUser({
         email: data.email,
         name: data.name,
-        image: data?.image ?? "https://i.pravatar.cc/300",
+        image: data?.image,
       });
       setIsLoggedIn(true);
     }
@@ -61,7 +61,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setUser({
         email: data.email,
         name: data.name,
-        image: data?.image ?? "https://i.pravatar.cc/300",
+        image: data?.image,
       });
       setIsLoggedIn(true);
     }
@@ -72,7 +72,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     toast.success("Logout success", {id: "logout"})
     setIsLoggedIn(false);
     setUser(null);
-    // window.location.reload();
   };
 
   const value = {
