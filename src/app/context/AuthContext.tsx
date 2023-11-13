@@ -31,7 +31,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     //for skip logging if have valid cookies
     //checkear si funciona en produccion
-    return () => {
       const res = async () => {
         const data = await checkAuthToken();
         if (data) {
@@ -44,7 +43,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         }
       };
       res();
-    };
   }, []);
 
   const login = async (email: string, password: string) => {
