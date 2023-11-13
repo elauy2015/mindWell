@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 "use client";
 import {
   Button,
@@ -14,16 +15,16 @@ import Google from "../assets/google.svg";
 import Facebook from "../assets/facebook.svg";
 import Apple from "../assets/apple.svg";
 import RegisterSucccess from "../components/RegisterSuccess";
+import toast from "react-hot-toast";
+import { useAuth } from "../context/AuthContext";
 
 const page = () => {
-  // eslint-disable-next-line react-hooks/rules-of-hooks
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const auth = useAuth();
   const {
     register,
     handleSubmit,
-    watch,
     formState: { errors },
-    // eslint-disable-next-line react-hooks/rules-of-hooks
   } = useForm({
     values: {
       name: "",
@@ -33,9 +34,16 @@ const page = () => {
     mode: "onChange",
     reValidateMode: "onChange",
   });
-  const onSubmit = (data: any) => {
-    console.log(data);
-    onOpen();
+
+  const onSubmit = async (data: any) => {
+    toast.loading("SignUp...", { id: "signup" });
+    try {
+      await auth?.signup(data.name ,data.email, data.password);
+      onOpen();
+      toast.success("SignUpsuccessfully ", { id: "signup" });
+    } catch (error) {
+      toast.error("SignUp failed", { id: "signup" });
+    }
   };
 
   return (

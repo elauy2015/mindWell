@@ -89,12 +89,9 @@ const page = () => {
   }, [chatMessages]);
 
   useEffect(() => {
-    return()=>{
       if (!auth?.user) {
         router.push("/login");
       }
-    }
-     
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [auth]);
 
