@@ -36,7 +36,6 @@ const page = () => {
   const {
     register,
     handleSubmit,
-    watch,
     setValue,
     formState: { errors },
   } = useForm({
@@ -55,7 +54,9 @@ const page = () => {
     setValue("prompt", "");
 
     const chatData = await sendChatRequest(data.prompt);
-    setChatMessages([...chatData.chats]);
+    if(chatData.chats){
+      setChatMessages([...chatData.chats]);
+    }
     setLoadingChatBot(false);
   };
 
@@ -67,13 +68,13 @@ const page = () => {
 
   useLayoutEffect(() => {
     if (auth?.isLoggedIn && auth.user) {
-      toast.loading("Loading Chats", { id: "loadchats" });
+      toast.loading("Loading Chats", { id: "loadChats" });
 
       getUserChats()
         .then((data) => {
           setChatMessages([...data.chats]);
           if(data.chats.length >= 1){
-            toast.success("Succesfully loaded chats", { id: "loadchats" });
+            toast.success("Successfully loaded chats", { id: "loadChats" });
           }else{
             toast.dismiss();
           }
