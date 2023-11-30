@@ -104,7 +104,7 @@ const page = () => {
                 required: "Porfavor llene la vaina",
                 pattern: {
                   message: "Formato inválido",
-                  value: /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d).{8,}$/,
+                  value: /^.{8,}$/,
                 },
               })}
               type="password"
