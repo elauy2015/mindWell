@@ -2,7 +2,7 @@ import axios from "axios";
 import toast from "react-hot-toast";
 
 export const loginUser = async (email: string, password: string) => {
-  const res = await axios.post("/user/login", { email: email, password: password});
+  const res = await axios.post("/user/login", { email, password});
 
   if (res.status !== 200) {
     throw new Error("Unable to login");
@@ -11,7 +11,8 @@ export const loginUser = async (email: string, password: string) => {
 };
 
 export const signUpUser = async (name:string ,email: string, password: string) => {
-  const res = await axios.post("/user/signup", {name : name, email: email, password: password});
+  const res = await axios.post("/user/signup", { name, email, password });
+
 
   if (res.status !== 200) {
     throw new Error("Unable to signUp");
@@ -29,7 +30,7 @@ export const checkAuthToken = async () => {
   };
   
 export const sendChatRequest = async (message: string)=>{
-  const res = await axios.post("/chat/new", {message: message});
+  const res = await axios.post("/chat/new", {message});
   if(res.status === 201){
     toast.error("Alcanzaste el limite diario", {id: "Limit Chat"})
     return res.status

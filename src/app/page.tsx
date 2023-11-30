@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import HomeCard from "./components/HomeCard";
-import { Button, Link, Progress } from "@nextui-org/react";
+import { Button, Progress } from "@nextui-org/react";
 import Imagen1 from "./assets/slider1.jpeg";
 import Imagen2 from "./assets/slider2.jpeg";
 import Imagen3 from "./assets/slider3.jpeg";
@@ -14,7 +14,7 @@ export default function Home() {
   const [changeView, setChangeView] = useState(0);
   console.log(useAuth()?.isLoggedIn);
 
-  const router = useRouter()
+  const router = useRouter();
   const sections = [
     {
       component: (
@@ -92,7 +92,7 @@ export default function Home() {
       <div className="h-[680px]">{currentSection?.component}</div>
       <div className="flex justify-between items-end pb-12 pr-6">
         <div className="flex items-center w-full justify-between h-16">
-        <Progress
+          <Progress
             value={changeView}
             maxValue={sections.length - 1}
             className="max-w-[60%]"
@@ -101,8 +101,6 @@ export default function Home() {
             }}
           />
           {canGoNext ? (
-           <>
-            
             <Button
               isIconOnly
               onPress={() => handleNext()}
@@ -120,18 +118,18 @@ export default function Home() {
                 alt="Picture of the author"
               />
             </Button>
-           </>
-          ):
-           <Button
+          ) : (
+            <Button
               size="lg"
-              onPress={()=>{router.push('/login')}}
+              onPress={() => {
+                router.push("/login");
+              }}
               radius="md"
               className="ml-5 !bg-white"
             >
-             Iniciar sesión
+              Iniciar sesión
             </Button>
-         
-          }
+          )}
         </div>
       </div>
     </div>

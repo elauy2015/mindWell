@@ -1,9 +1,9 @@
 "use client";
 import React from "react";
-import Image from "next/image";
+import Image, { StaticImageData } from "next/image";
 
 interface HomeCard {
-  image?: any;
+  image: StaticImageData;
   text?: string;
   title?: string;
 }

@@ -1,18 +1,20 @@
 import React from "react";
-import Image from "next/image";
-import Trash from "../assets/trash.svg";
 import {
   Dropdown,
   DropdownTrigger,
   DropdownMenu,
   DropdownItem,
   Avatar,
-  Button,
 } from "@nextui-org/react";
 import { useAuth } from "../context/AuthContext";
 import DeleteAllChat from "./DeleteAllChat";
+import { Message } from "../types/common";
 
-const ChatNavBar = ({setChatMessages}:any) => {
+interface ChatNavBarProps {
+  setChatMessages: React.Dispatch<React.SetStateAction<Message[]>>;
+}
+
+const ChatNavBar = ({setChatMessages}:ChatNavBarProps) => {
   const auth = useAuth();
   return (
     <section className="flex flex-row h-16 border-b-3 top-0 fixed w-full bg-white items-center justify-between">
@@ -37,7 +39,6 @@ const ChatNavBar = ({setChatMessages}:any) => {
               <p className="font-semibold">Signed in as</p>
               <p className="font-semibold">{auth?.user?.email}</p>
             </DropdownItem>
-            {/* <DropdownItem key="settings">My Settings</DropdownItem> */}
             <DropdownItem key="help_and_feedback">Help & Feedback</DropdownItem>
             <DropdownItem key="logout" color="danger" onClick={auth?.logout}>
               Log Out

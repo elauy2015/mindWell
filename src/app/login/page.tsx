@@ -10,7 +10,7 @@ import {
 import React, { useEffect } from "react";
 import arrowBlack from "../assets/arrowBlack.svg";
 import Image from "next/image";
-import { SubmitHandler, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import Google from "../assets/google.svg";
 import Facebook from "../assets/facebook.svg";
 import Apple from "../assets/apple.svg";
@@ -19,6 +19,11 @@ import { useAuth } from "../context/AuthContext";
 import { toast } from "react-hot-toast";
 import { useRouter } from "next/navigation";
 
+interface form {
+  email: string;
+  password: string;
+}
+
 const page = () => {
   const auth = useAuth();
   const router = useRouter();
@@ -26,7 +31,6 @@ const page = () => {
   const {
     register,
     handleSubmit,
-    watch,
     formState: { errors },
   } = useForm({
     values: {
@@ -36,7 +40,7 @@ const page = () => {
     mode: "onChange",
     reValidateMode: "onChange",
   });
-  const onSubmit = async (data: any) => {
+  const onSubmit = async (data: form) => {
     toast.loading("Signing In...", { id: "signing" });
     try {
       await auth?.login(data.email, data.password);
@@ -79,7 +83,6 @@ const page = () => {
           Please enter you email & password to sign in
         </p>
         <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col">
-          <div className="h-16 ">
             <Input
               {...register("email", {
                 required: "Porfavor llene la vaina",
@@ -90,13 +93,12 @@ const page = () => {
               })}
               type="email"
               label="Email"
+              className="h-16 "
               variant="underlined"
               labelPlacement="outside"
               placeholder="Enter your email"
             />
             {errors.email?.message}
-          </div>
-          <div className="h-16 mt-10">
             <Input
               {...register("password", {
                 required: "Porfavor llene la vaina",
@@ -107,12 +109,12 @@ const page = () => {
               })}
               type="password"
               label="Password"
+              className="h-16 mt-10"
               variant="underlined"
               labelPlacement="outside"
               placeholder="Enter your password"
             />
             {errors.password?.message}
-          </div>
 
           <Checkbox className="mt-6">Remember me</Checkbox>
 
@@ -124,7 +126,7 @@ const page = () => {
             Sign in
           </Button>
 
-          <a href="" className="text-principal text-center mt-4">
+          <a href="/" className="text-principal text-center mt-4">
             Forget password?
           </a>
           <div className="flex flex-row w-full justify-center gap-2 mt-4">

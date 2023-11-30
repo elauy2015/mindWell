@@ -10,13 +10,19 @@ import {
 import React from "react";
 import arrowBlack from "../assets/arrowBlack.svg";
 import Image from "next/image";
-import { SubmitHandler, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import Google from "../assets/google.svg";
 import Facebook from "../assets/facebook.svg";
 import Apple from "../assets/apple.svg";
 import RegisterSucccess from "../components/RegisterSuccess";
 import toast from "react-hot-toast";
 import { useAuth } from "../context/AuthContext";
+
+interface form {
+  name: string;
+  email: string;
+  password: string;
+}
 
 const page = () => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -35,10 +41,10 @@ const page = () => {
     reValidateMode: "onChange",
   });
 
-  const onSubmit = async (data: any) => {
+  const onSubmit = async (data: form) => {
     toast.loading("SignUp...", { id: "signup" });
     try {
-      await auth?.signup(data.name ,data.email, data.password);
+      await auth?.signup(data.name, data.email, data.password);
       onOpen();
       toast.success("SignUpsuccessfully ", { id: "signup" });
     } catch (error) {
@@ -71,7 +77,7 @@ const page = () => {
           Please enter you email & password to create an account
         </p>
         <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col">
-        <div className="h-16 ">
+          <div className="h-16 ">
             <Input
               {...register("name", {
                 required: "Porfavor llene la vaina",

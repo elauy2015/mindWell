@@ -8,7 +8,7 @@ import Microphone from "../assets/microphone.svg";
 import Spin from "../assets/spinner-white.svg";
 import Send from "../assets/send.svg";
 import NoChats from "../components/NoChats";
-import { Button, Input, useDisclosure } from "@nextui-org/react";
+import { Button, Input } from "@nextui-org/react";
 import ChatNavBar from "../components/ChatNavBar";
 import ChatFooter from "../components/ChatFooter";
 import ChatBox from "../components/ChatBox";
@@ -16,12 +16,9 @@ import { useAuth } from "../context/AuthContext";
 import { getUserChats, sendChatRequest } from "../helper/api-communicator";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
+import { Message } from "../types/common";
 
-type UserRole = "user" | "assistant";
-interface Message {
-  role: UserRole;
-  content: string;
-}
+
 
 const page = () => {
   const auth = useAuth();
@@ -33,6 +30,9 @@ const page = () => {
     input: ["text-base", "placeholder:text-lightGray", "px-3"],
     inputWrapper: ["bg-backGroundGray", "", "h-14", "!rounded-xl", "shadow"],
   };
+  interface form {
+    prompt: string;
+  }
   const {
     register,
     handleSubmit,
@@ -46,7 +46,13 @@ const page = () => {
     reValidateMode: "onChange",
   });
 
-  const onSubmit = async (data: any) => {
+  const scrollChatToBottom = () => {
+    if (chatContainerRef.current) {
+      chatContainerRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
+  const onSubmit = async (data: form) => {
     scrollChatToBottom();
     setLoadingChatBot(true);
     const newMessage: Message = { role: "user", content: data.prompt };
@@ -60,11 +66,7 @@ const page = () => {
     setLoadingChatBot(false);
   };
 
-  const scrollChatToBottom = () => {
-    if (chatContainerRef.current) {
-      chatContainerRef.current.scrollIntoView({ behavior: "smooth" });
-    }
-  };
+
 
   useLayoutEffect(() => {
     if (auth?.isLoggedIn && auth.user) {
@@ -150,7 +152,7 @@ const page = () => {
                 />
               }
               label=" "
-              isInvalid={!!errors.prompt?.message}
+              isInvalid={Boolean(errors.prompt?.message)}
               errorMessage={errors.prompt?.message}
               placeholder="Ask me anything... "
             />
@@ -160,15 +162,15 @@ const page = () => {
             isIconOnly
             type="submit"
             size="lg"
-            isDisabled={!!loadingChatBot}
+            isDisabled={Boolean(loadingChatBot)}
             className="ml-auto flex !bg-principal rounded-full shadow-md shadow-cyan-500/50"
           >
             <Image
-              src={!!loadingChatBot ? Spin : Send}
+              src={Boolean(loadingChatBot) ? Spin : Send}
               width={500}
               height={500}
               quality={100}
-              className={`${!!loadingChatBot && "animate-spin"} w-8 h-8`}
+              className={`${Boolean(loadingChatBot) ? "animate-spin" : ''} w-8 h-8`}
               alt="Picture of the author"
             />
           </Button>
